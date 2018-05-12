@@ -9,7 +9,7 @@ class App extends Component {
       <div className="index">
           <MainMenu />
           <div className="container">
-            <Boards />
+            <Boards store={this.props.store}/>
           </div>  
       </div>
     );

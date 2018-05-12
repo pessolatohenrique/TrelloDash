@@ -56,3 +56,7 @@ body {
     background-color: #ecf0f5;
     min-height: 100%;
 }
+
+.nav-item {
+    cursor: pointer;
+}
