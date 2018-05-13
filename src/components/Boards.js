@@ -11,42 +11,60 @@ export default class Boards extends Component{
     this.toggle = this.toggle.bind(this);
     this.state = {
         activeTab: '1',
-        boards: []
+        boards: [],
+        board_lists: []
     };
   }
 
+  getFirstTab() {
+    // let store = this.props.store;
+    // let tail = this.state.boards;
+
+    // let first = tail[0];
+
+    // this.setState({activeTab: first.id});
+  }
+
   componentWillMount(){
-    let store = this.props.store;
+      let store = this.props.store;
       store.subscribe(() => {
-        this.setState({boards : store.getState().board}, function() {
-            let tail = this.state.boards._tail;
-            let first_id = tail.array[0].id;
-            this.setState({activeTab: first_id});
+        this.setState({
+            boards : store.getState().board['boards'],
+            board_lists: store.getState().board['board_lists']
         });
       });
     }
 
   componentDidMount() {
      BoardLogic.list(this.props.store);
+    //  BoardLogic.getBoardList(this.props.store, "OoLAzfVp");
   }
 
-  toggle(tab) {
+  /**
+   * realiza a troca de abas do componente de navegação
+   * @param {String} tab ID do quadro a ser trocado 
+   * @param {String} shortLink Link fornecido a ser trocado e pesquisado
+   */
+  toggle(tab, shortLink) {
     if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab
-      });
+        BoardLogic.getBoardList(this.props.store, shortLink);
+        this.setState({
+            activeTab: tab
+        });
     }
   }
+
   render() {
-      let { boards } = this.state;
+    let { boards, board_lists } = this.state;
+
     return (
       <div>
         <Nav tabs>
-            {boards.map(board => 
+            {boards && boards.map((board, index) => 
                 <NavItem key={board.id}>
                     <NavLink
                     className={classnames({ active: this.state.activeTab === board.id })}
-                    onClick={() => { this.toggle(board.id); }}
+                    onClick={() => { this.toggle(board.id, board.shortLink); }}
                     >
                     {board.name}
                     </NavLink>
@@ -54,14 +72,13 @@ export default class Boards extends Component{
             )}
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
-            {boards.map(board => 
+            {boards && boards.map(board => 
                 <TabPane tabId={board.id} key={board.id}>
                     <Row>
-                        {board.name}
                         <Col sm="12">
-                            <List />
-                            <List />
-                            <List />
+                        {board_lists !== undefined && board_lists.map(list =>
+                            <List name={list.name} key={list.id} />
+                        )}
                         </Col>
                     </Row>
                 </TabPane>

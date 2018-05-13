@@ -9,7 +9,7 @@ export default class List extends Component {
                 <div className="row">
                     <div className="col-md-10">
                         <h4>
-                            Backlog 
+                            {this.props.name} 
                         </h4>
                     </div>
                     <div className="col-md-2">
