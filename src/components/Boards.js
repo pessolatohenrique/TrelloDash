@@ -47,7 +47,9 @@ export default class Boards extends Component{
    */
   toggle(tab, shortLink) {
     if (this.state.activeTab !== tab) {
-        BoardLogic.getBoardList(this.props.store, shortLink);
+        BoardLogic.getBoardList(this.props.store, shortLink, function(response, store) {
+            BoardLogic.getCards(store, response);
+        });
         this.setState({
             activeTab: tab
         });
@@ -56,7 +58,7 @@ export default class Boards extends Component{
 
   render() {
     let { boards, board_lists } = this.state;
-
+    
     return (
       <div>
         <Nav tabs>
@@ -77,7 +79,7 @@ export default class Boards extends Component{
                     <Row>
                         <Col sm="12">
                         {board_lists !== undefined && board_lists.map(list =>
-                            <List name={list.name} key={list.id} />
+                            <List name={list.name} key={list.id} cards={list.cards} />
                         )}
                         </Col>
                     </Row>

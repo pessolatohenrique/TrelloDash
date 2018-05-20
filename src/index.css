@@ -42,6 +42,8 @@ body {
 .badge-card {
     margin-right: 0.5em;
     padding: 0.5em !important;
+    color: white;
+    font-size: 0.8em;
 }
 
 .board-card {
@@ -59,4 +61,32 @@ body {
 
 .nav-item {
     cursor: pointer;
+}
+
+.badge-blue {
+    background-color: #0079bf;
+}
+
+.badge-green {
+    background-color: #61bd4f;
+}
+
+.badge-orange {
+    background-color: #ffab4a;
+}
+
+.badge-yellow {
+    background-color: #f2d600;
+}
+
+.badge-red {
+    background-color: #eb5a46;
+}
+
+.badge-purple {
+    background-color: #c377e0;
+}
+
+.badge-sky {
+    background-color: #00c2e0;
 }
