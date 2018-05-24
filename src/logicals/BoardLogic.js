@@ -1,9 +1,112 @@
-import { listBoard, getBoardList, getCards } from '../actions/actionCreator';
+import { listBoard, getBoardList, getCards, 
+    createBoard, deleteBoard, findBoard, updateBoard } 
+from '../actions/actionCreator';
 
 /**
  * classe contendo lógicas relacionadas a um Board
  */
 export default class BoardLogic {
+    /**
+     * realiza a criação de um novo quadro
+     * @param {*} store 
+     * @param {Object} fields objeto descrevendo campos e respectivos valores 
+     */
+    static create(store, fields) {
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+
+        const headers = {
+            method: "POST",
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                name: fields.board_name,
+                defaultLabels: fields.default_label,
+                defaultLists: fields.default_list,
+                prefs_background: fields.background_color,
+                prefs_permissionLevel: "public"
+            })
+        }
+
+        fetch(`https://api.trello.com/1/boards/?key=${key}&token=${token}`, headers)
+        .then(response => response.json())
+        .then(board => {
+            board.shortLink = board.id;
+            store.dispatch(createBoard(board));
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
+    /**
+     * encontra informações gerais de um quadro, de acordo com o seu ID
+     * @param {*} store 
+     * @param {String} board_id ID a ser pesquisado 
+     */
+    static find(store, board_id) {
+        fetch(`https://api.trello.com/1/boards/${board_id}`)
+        .then(response => response.json())
+        .then(result => {
+            store.dispatch(findBoard(result));
+        })
+    }
+
+    /**
+     * realiza a atualização de um quadro, de acordo com campos e ID
+     * @param {*} store 
+     * @param {Object} fields campos a serem atualizados
+     * @param {String} board_id ID a ser atualizado 
+     */
+    static update(store, fields, board_id) {
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+
+        const headers = {
+            method: "PUT",
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        }
+
+        fetch(`https://api.trello.com/1/boards/${board_id}?name=${fields.board_name}&key=${key}&token=${token}`, headers)
+        .then(response => response.json())
+        .then(board => {
+            board.shortLink = board.id;
+            store.dispatch(updateBoard(board));
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
+    /**
+     * realiza a exclusão de um quadro de acordo com o ID
+     * @param {*} store 
+     * @param {String} board_id ID do board, fornecido pelo Trello 
+     */
+    static delete(store, board_id) {
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+
+        const headers = {
+            method: "DELETE",
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        }
+
+        fetch(`https://api.trello.com/1/boards/${board_id}/?key=${key}&token=${token}`, headers)
+        .then(response => response.json())
+        .then(board => {
+            store.dispatch(deleteBoard(board_id));
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
     /**
      * realiza a listagem de quadros para um usuário
      * para que a API retorne, o quadro deve ser público
@@ -55,7 +158,5 @@ export default class BoardLogic {
 
             return true;
         });
-
-        // store.dispatch(getCards(group_lists));
     }
 }

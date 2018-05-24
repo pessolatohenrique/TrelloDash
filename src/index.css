@@ -90,3 +90,19 @@ body {
 .badge-sky {
     background-color: #00c2e0;
 }
+
+.collapse.show {
+    margin-bottom: 1em;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+.tab-pane .dropdown-toggle {
+    margin-bottom: 1em;
+}
+
+.btn-space {
+    margin-right: 0.5em;
+}

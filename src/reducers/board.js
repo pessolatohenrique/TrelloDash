@@ -53,6 +53,43 @@ export function board(state = new List(), action) {
             const cards_object = Object.assign({}, state, array_cards);
 
             return cards_object;
+        case "BOARD-CREATE":
+            const board = action.board;
+            const boards_state = state.boards.concat(board);
+            const actual_state = state;
+
+            actual_state['boards'] = boards_state;
+
+            return actual_state;
+        case "BOARD-DELETE":
+            const board_id = action.board_id;
+            const actual_boards = state.boards.filter(function(item){
+                return item.id !== board_id
+            });
+            const boards_after = state;
+            
+            boards_after['boards'] = actual_boards;
+
+            return boards_after;
+        case "BOARD-FIND":
+            const board_find = action.board;
+            const board_info = [];
+            board_info['board_info'] = board_find;
+
+            const state_info = Object.assign({}, state, board_info);
+
+            return state_info;
+        case "BOARD-UPDATE":
+            const board_updated = action.board;
+            const board_list = state.boards;
+
+            const updated_list = 
+                board_list.map(item => item.id === board_updated.id?board_updated:item);
+
+            const state_updated = state;
+            state_updated['boards'] = updated_list;
+
+            return state_updated;
         default:
             // console.log("break");
             break;

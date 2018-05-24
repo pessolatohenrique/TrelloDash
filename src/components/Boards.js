@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import List from './List';
+import CollapseHelper from './CollapseHelper';
 import BoardLogic from '../logicals/BoardLogic';
 import classnames from 'classnames';
 
@@ -9,28 +10,30 @@ export default class Boards extends Component{
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.createBoard = this.createBoard.bind(this);
+    this.deleteBoard = this.deleteBoard.bind(this);
+    this.findBoard = this.findBoard.bind(this);
+    this.updateBoard = this.updateBoard.bind(this);
+    this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
         boards: [],
-        board_lists: []
+        board_lists: [],
+        board_info: {},
+        collapse: false,
+        invalid_board: false 
     };
   }
 
-  getFirstTab() {
-    // let store = this.props.store;
-    // let tail = this.state.boards;
-
-    // let first = tail[0];
-
-    // this.setState({activeTab: first.id});
-  }
-
   componentWillMount(){
+      this.saveStorage();
+      
       let store = this.props.store;
       store.subscribe(() => {
         this.setState({
             boards : store.getState().board['boards'],
-            board_lists: store.getState().board['board_lists']
+            board_lists: store.getState().board['board_lists'],
+            board_info: store.getState().board['board_info']
         });
       });
     }
@@ -38,6 +41,48 @@ export default class Boards extends Component{
   componentDidMount() {
      BoardLogic.list(this.props.store);
     //  BoardLogic.getBoardList(this.props.store, "OoLAzfVp");
+  }
+
+  saveStorage() {
+    sessionStorage.setItem("key", "3035a2cb9f26384284e94d2f545f2c0c");
+    sessionStorage.setItem("token", "2b8048cfbb27c0f951f1632b13d58fc9541332bdc6bc4f06c022b7c02c244771");
+  }
+
+  createBoard(event, fields, callback) {
+      event.preventDefault();
+      if (fields.board_name.length <= 3) {
+          this.setState({invalid_board:true});
+          return false;
+      }
+      this.setState({invalid_board:false});   
+      BoardLogic.create(this.props.store, fields);   
+      callback(event);
+  }
+
+  updateBoard(event, fields, board_id, callback) {
+      event.preventDefault();
+      if (fields.board_name.length <= 3) {
+        this.setState({invalid_board:true});
+        return false;
+    }
+    this.setState({invalid_board:false});
+    BoardLogic.update(this.props.store, fields, board_id);
+    callback(event);
+  }
+
+  findBoard(event) {
+      event.preventDefault();
+      const board_id = this.state.activeTab;
+      BoardLogic.find(this.props.store, board_id);
+  }
+
+  deleteBoard(event) {
+      event.preventDefault();
+      const resp = window.confirm("Todas as listas e cards serão apagados. Deseja realmente excluir o quadro?");
+      const board_id = this.state.activeTab;
+      if (resp) {
+          BoardLogic.delete(this.props.store, board_id);
+      }
   }
 
   /**
@@ -55,12 +100,22 @@ export default class Boards extends Component{
         });
     }
   }
+  
+  getFirstTab() {
+    // let store = this.props.store;
+    // let tail = this.state.boards;
+
+    // let first = tail[0];
+
+    // this.setState({activeTab: first.id});
+  }
 
   render() {
-    let { boards, board_lists } = this.state;
-    
+    let { boards, board_lists, invalid_board, board_info } = this.state;
+
     return (
       <div>
+
         <Nav tabs>
             {boards && boards.map((board, index) => 
                 <NavItem key={board.id}>
@@ -76,6 +131,12 @@ export default class Boards extends Component{
         <TabContent activeTab={this.state.activeTab}>
             {boards && boards.map(board => 
                 <TabPane tabId={board.id} key={board.id}>
+                    <CollapseHelper createBoard={this.createBoard}
+                        deleteBoard={this.deleteBoard}
+                        findBoard={this.findBoard}
+                        updateBoard={this.updateBoard}
+                        board_info={board_info}
+                        invalid_board={invalid_board}/>
                     <Row>
                         <Col sm="12">
                         {board_lists !== undefined && board_lists.map(list =>

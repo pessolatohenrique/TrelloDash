@@ -9,3 +9,19 @@ export function getBoardList(lists) {
 export function getCards (list, cards) {
     return {type: 'CARD-LIST', list, cards};
 }
+
+export function createBoard (board) {
+    return {type: 'BOARD-CREATE', board};
+}
+
+export function deleteBoard(board_id) {
+    return {type: 'BOARD-DELETE', board_id};
+}
+
+export function findBoard(board) {
+    return {type: 'BOARD-FIND', board};
+}
+
+export function updateBoard(board) {
+    return {type: 'BOARD-UPDATE', board};
+}

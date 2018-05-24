@@ -11,7 +11,7 @@ export default class CardBoard extends Component {
      * @return {String} message mensagem a ser apresentada 
      */
     showDescription(description) {
-        let message = description == ""?"Descrição não informada":description;
+        let message = description === ""?"Descrição não informada":description;
         return message;
     }
 
@@ -30,8 +30,6 @@ export default class CardBoard extends Component {
 
     showDate(txt_date) {
         const converted_txt = convertToBrazilian(txt_date);
-        //aplicar formatação de data aqui
-        //criar novo component para isso
         return converted_txt;
     }
 
