@@ -106,3 +106,11 @@ body {
 .btn-space {
     margin-right: 0.5em;
 }
+
+.link_editable {
+    color: black;
+}
+
+.link_editable:hover {
+    color: #008972 !important;
+}

@@ -1,4 +1,4 @@
-import { create } from '../actions/actionListCreator';
+import { create, find } from '../actions/actionListCreator';
 
 /**
  * classe contendo lógicas relacionadas a um Board
@@ -30,6 +30,15 @@ export default class ListLogic {
         .catch(error => {
             console.log(error);
         });
+    }
+
+    /**
+     * realiza o preenchimento de estado referente a uma lista
+     * @param {*} store 
+     * @param {Object} fields objeto descrevendo campos e respectivos valores 
+     */
+    static find(store, fields) {
+        store.dispatch(find(fields));
     }
 
 }

@@ -105,9 +105,12 @@ export function board(state = new List(), action) {
             const list_create = state.board_lists.concat(new_item);
             state_create['board_lists'] = list_create;
 
-            console.log(state_create);
-
             return state_create;
+        case "LIST-FIND":
+            const state_find = state;
+            state_find['list_info'] = action.fields;
+            
+            return state_find;
         default:
             // console.log("break");
             break;

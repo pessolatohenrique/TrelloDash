@@ -27,11 +27,15 @@ export default class CollapseHelper extends Component {
         }
     }
 
-    render() {
-        const { createBoard, deleteBoard , findBoard, updateBoard, 
-            createList,
-            invalid_list, invalid_board, board_info } = this.props;
+    componentWillReceiveProps(nextProps) {
+        this.setState({ collapse_list: nextProps.collapse_list});
+    }
 
+    render() {
+        const { createBoard, deleteBoard , findBoard, updateBoard, findList,
+            createList, list_info, 
+            invalid_list, invalid_board, board_info } = this.props;
+        
         return (
         <div>
             <Row>
@@ -62,6 +66,13 @@ export default class CollapseHelper extends Component {
                                 this.toggleCollapse(event, "list");
                             }
                         }
+                        callBackUpdate={(event) => {
+                                findList(event)
+                                this.toggleCollapse(event, "list");
+                            }
+                        }
+                        hasUpdate={false}
+                        hasDelete={false}
                         toggleCollapse={this.toggleCollapse.bind(this)} 
                         deleteBoard={deleteBoard}
                         findBoard={findBoard}/>
@@ -88,7 +99,7 @@ export default class CollapseHelper extends Component {
                             createList={createList}
                             // updateList={updateList}
                             invalid_list={invalid_list}
-                            // list_info={list_info}
+                            list_info={list_info}
                             toggleCollapse={this.toggleCollapse.bind(this)} 
                         />
                     </CardBody>

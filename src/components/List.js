@@ -12,14 +12,21 @@ export default class List extends Component {
         return total_msg;
     }
     render() {
-        const { cards } = this.props;
+        const { cards, findList } = this.props;
+
         return (
             cards.length > 0 &&
             <div className="board-list">
                 <div className="row">
                     <div className="col-md-10">
                         <h4>
-                            {this.props.name} 
+                            <a href="/link" className="link_editable"
+                                onClick={(event) => {
+                                        findList(event, this.props);
+                                    }
+                                }>
+                                {this.props.name}
+                            </a> 
                         </h4>
                     </div>
                     <div className="col-md-2">

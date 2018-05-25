@@ -21,7 +21,7 @@ export default class ListForm extends Component {
     componentWillReceiveProps() {
         const list_info = this.props.list_info;
         if (list_info) {
-            this.setState({board_name:this.props.list_info.name});
+            this.setState({list_name: list_info.name});
         }
         
     }
@@ -29,7 +29,6 @@ export default class ListForm extends Component {
     render() {
         const { createList, updateList,
             invalid_list, toggleCollapse, list_info } = this.props;
-
         return (
             <Form onSubmit={
                 (event) => {

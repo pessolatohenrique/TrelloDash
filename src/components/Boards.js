@@ -16,13 +16,16 @@ export default class Boards extends Component{
     this.findBoard = this.findBoard.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
     this.createList = this.createList.bind(this);
+    this.findList = this.findList.bind(this);
     this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
         boards: [],
         board_lists: [],
         board_info: {},
+        list_info: {},
         collapse: false,
+        collapse_list: false,
         invalid_board: false,
         invalid_list: false 
     };
@@ -36,7 +39,8 @@ export default class Boards extends Component{
         this.setState({
             boards : store.getState().board['boards'],
             board_lists: store.getState().board['board_lists'],
-            board_info: store.getState().board['board_info']
+            board_info: store.getState().board['board_info'],
+            list_info: store.getState().board['list_info'],
         });
       });
     }
@@ -61,6 +65,12 @@ export default class Boards extends Component{
         this.setState({invalid_list:false});   
         ListLogic.create(this.props.store, fields, board_id);   
         callback(event);
+    }
+
+    findList(event, list_info, callback) {
+        event.preventDefault();
+        ListLogic.find(this.props.store, list_info);
+        this.setState({collapse_list: true});
     }
 
   createBoard(event, fields, callback) {
@@ -111,7 +121,8 @@ export default class Boards extends Component{
             BoardLogic.getCards(store, response);
         });
         this.setState({
-            activeTab: tab
+            activeTab: tab,
+            collapse_list: false
         });
     }
   }
@@ -126,7 +137,7 @@ export default class Boards extends Component{
   }
 
   render() {
-    let { boards, board_lists, invalid_board, board_info, invalid_list } = this.state;
+    let { boards, board_lists, invalid_board, board_info, list_info ,invalid_list, collapse_list } = this.state;
 
     return (
       <div>
@@ -152,14 +163,19 @@ export default class Boards extends Component{
                         findBoard={this.findBoard}
                         updateBoard={this.updateBoard}
                         createList={this.createList}
+                        findList={this.findList}
                         board_info={board_info}
+                        list_info={list_info}
                         invalid_board={invalid_board}
                         invalid_list={invalid_list}
+                        collapse_list={collapse_list}
                     />
                     <Row>
                         <Col sm="12">
                         {board_lists !== undefined && board_lists.map(list =>
-                            <List name={list.name} key={list.id} cards={list.cards} />
+                            <List name={list.name} id={list.id} board_id={list.idBoard} cards={list.cards} key={list.id} 
+                                findList={this.findList}
+                            />
                         )}
                         </Col>
                     </Row>
