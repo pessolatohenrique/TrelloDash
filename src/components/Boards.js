@@ -3,6 +3,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap
 import List from './List';
 import CollapseHelper from './CollapseHelper';
 import BoardLogic from '../logicals/BoardLogic';
+import ListLogic from '../logicals/ListLogic';
 import classnames from 'classnames';
 
 export default class Boards extends Component{
@@ -14,6 +15,7 @@ export default class Boards extends Component{
     this.deleteBoard = this.deleteBoard.bind(this);
     this.findBoard = this.findBoard.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
+    this.createList = this.createList.bind(this);
     this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
@@ -21,7 +23,8 @@ export default class Boards extends Component{
         board_lists: [],
         board_info: {},
         collapse: false,
-        invalid_board: false 
+        invalid_board: false,
+        invalid_list: false 
     };
   }
 
@@ -47,6 +50,18 @@ export default class Boards extends Component{
     sessionStorage.setItem("key", "3035a2cb9f26384284e94d2f545f2c0c");
     sessionStorage.setItem("token", "2b8048cfbb27c0f951f1632b13d58fc9541332bdc6bc4f06c022b7c02c244771");
   }
+
+  createList(event, fields, callback) {
+        const board_id = this.state.activeTab;
+        event.preventDefault();
+        if (fields.list_name.length <= 3) {
+            this.setState({invalid_list:true});
+            return false;
+        }
+        this.setState({invalid_list:false});   
+        ListLogic.create(this.props.store, fields, board_id);   
+        callback(event);
+    }
 
   createBoard(event, fields, callback) {
       event.preventDefault();
@@ -111,7 +126,7 @@ export default class Boards extends Component{
   }
 
   render() {
-    let { boards, board_lists, invalid_board, board_info } = this.state;
+    let { boards, board_lists, invalid_board, board_info, invalid_list } = this.state;
 
     return (
       <div>
@@ -131,12 +146,16 @@ export default class Boards extends Component{
         <TabContent activeTab={this.state.activeTab}>
             {boards && boards.map(board => 
                 <TabPane tabId={board.id} key={board.id}>
-                    <CollapseHelper createBoard={this.createBoard}
+                    <CollapseHelper 
+                        createBoard={this.createBoard}
                         deleteBoard={this.deleteBoard}
                         findBoard={this.findBoard}
                         updateBoard={this.updateBoard}
+                        createList={this.createList}
                         board_info={board_info}
-                        invalid_board={invalid_board}/>
+                        invalid_board={invalid_board}
+                        invalid_list={invalid_list}
+                    />
                     <Row>
                         <Col sm="12">
                         {board_lists !== undefined && board_lists.map(list =>

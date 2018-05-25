@@ -18,7 +18,7 @@ export default class Example extends Component {
   }
 
   render() {
-    const { toggleCollapse, toggleName, callBackUpdate, callBackDelete } = this.props;
+    const { toggleCollapse, toggleName, callBackUpdate, callBackDelete, callBackInsert } = this.props;
 
     return (
     <div>
@@ -27,10 +27,7 @@ export default class Example extends Component {
             {toggleName}
         </DropdownToggle>
         <DropdownMenu>
-            <DropdownItem onClick={(event) => {
-                    toggleCollapse(event,"board")
-                }   
-            }>Adicionar</DropdownItem>
+            <DropdownItem onClick={callBackInsert}>Adicionar</DropdownItem>
             <DropdownItem onClick={callBackUpdate}>Atualizar</DropdownItem>
             <DropdownItem onClick={callBackDelete}>Excluir</DropdownItem>
         </DropdownMenu>

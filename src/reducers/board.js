@@ -90,6 +90,24 @@ export function board(state = new List(), action) {
             state_updated['boards'] = updated_list;
 
             return state_updated;
+        case "LIST-CREATE":
+            const state_create = state;
+            const new_item = action.list;
+            const card_object = {
+                id: 99999, 
+                name: 'Card de exemplo, apenas ilustrativo',
+                dateLastActivity: '0000-00-00T00:00:00.166Z'
+            };
+            new_item['cards'] = [
+                card_object
+            ];
+
+            const list_create = state.board_lists.concat(new_item);
+            state_create['board_lists'] = list_create;
+
+            console.log(state_create);
+
+            return state_create;
         default:
             // console.log("break");
             break;

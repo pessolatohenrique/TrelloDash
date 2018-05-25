@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Collapse, CardBody, Card, Row, Col } from 'reactstrap';
 import BoardForm from './BoardForm';
+import ListForm from './ListForm';
 import DropdownHelper from './DropdownHelper';
 
 export default class CollapseHelper extends Component {
@@ -8,21 +9,28 @@ export default class CollapseHelper extends Component {
         super(props);
 
         this.state = {
-            collapse: false
+            collapse: false,
+            collapse_list: false
         };
     }
 
     toggleCollapse(event, type) {
         event.preventDefault();
+        this.setState({
+            collapse: false,
+            collapse_list: false
+        });
         switch(type) {
             case "board": this.setState({ collapse: !this.state.collapse }); break;
+            case "list" : this.setState({collapse_list: !this.state.collapse_list}); break;
             default: console.log("Parametro collapse inválido. Verifique"); break;
         }
     }
 
     render() {
         const { createBoard, deleteBoard , findBoard, updateBoard, 
-            invalid_board, board_info } = this.props;
+            createList,
+            invalid_list, invalid_board, board_info } = this.props;
 
         return (
         <div>
@@ -31,6 +39,10 @@ export default class CollapseHelper extends Component {
                     <DropdownHelper 
                         toggleName={"Quadro"}
                         toggleCollapse={this.toggleCollapse.bind(this)} 
+                        callBackInsert={(event) => {
+                                this.toggleCollapse(event, "board");
+                            }
+                        }
                         callBackUpdate={(event) => {
                                 findBoard(event)
                                 this.toggleCollapse(event, "board");
@@ -46,6 +58,10 @@ export default class CollapseHelper extends Component {
                 <Col md="1">
                     <DropdownHelper 
                         toggleName={"Lista"}
+                        callBackInsert={(event) => {
+                                this.toggleCollapse(event, "list");
+                            }
+                        }
                         toggleCollapse={this.toggleCollapse.bind(this)} 
                         deleteBoard={deleteBoard}
                         findBoard={findBoard}/>
@@ -59,7 +75,22 @@ export default class CollapseHelper extends Component {
                             updateBoard={updateBoard}
                             invalid_board={invalid_board}
                             board_info={board_info}
-                            toggleCollapse={this.toggleCollapse.bind(this)} />
+                            toggleCollapse={this.toggleCollapse.bind(this)} 
+                        />
+                    </CardBody>
+                </Card>
+            </Collapse>
+
+            <Collapse isOpen={this.state.collapse_list}>
+                <Card>
+                    <CardBody>
+                        <ListForm 
+                            createList={createList}
+                            // updateList={updateList}
+                            invalid_list={invalid_list}
+                            // list_info={list_info}
+                            toggleCollapse={this.toggleCollapse.bind(this)} 
+                        />
                     </CardBody>
                 </Card>
             </Collapse>
