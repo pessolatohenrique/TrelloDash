@@ -38,12 +38,12 @@ export default class BoardForm extends Component {
                 (event) => {
                     if (board_info) {
                         updateBoard(event, this.state, board_info.id, function(event){
-                            toggleCollapse(event);
+                            toggleCollapse(event, "board");
                         });
                         
                     } else {
                         createBoard(event, this.state, function(event){
-                            toggleCollapse(event);
+                            toggleCollapse(event, "board");
                         });
                         this.setState({
                             board_name:'',
@@ -119,7 +119,11 @@ export default class BoardForm extends Component {
                 <Button color="info" className="btn-space">
                     {board_info?"Atualizar":"Adicionar"}
                 </Button>
-                <Button color="danger" onClick={this.props.toggleCollapse}>Cancelar</Button>
+                <Button color="danger" onClick={(event) => {
+                        this.props.toggleCollapse(event,"board")
+                    }
+                    
+                }>Cancelar</Button>
             </Form>            
         )
     }

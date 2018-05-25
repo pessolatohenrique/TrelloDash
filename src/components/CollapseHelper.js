@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Collapse, CardBody, Card } from 'reactstrap';
+import { Collapse, CardBody, Card, Row, Col } from 'reactstrap';
 import BoardForm from './BoardForm';
 import DropdownHelper from './DropdownHelper';
 
@@ -12,9 +12,12 @@ export default class CollapseHelper extends Component {
         };
     }
 
-    toggleCollapse(event) {
+    toggleCollapse(event, type) {
         event.preventDefault();
-        this.setState({ collapse: !this.state.collapse });
+        switch(type) {
+            case "board": this.setState({ collapse: !this.state.collapse }); break;
+            default: console.log("Parametro collapse inválido. Verifique"); break;
+        }
     }
 
     render() {
@@ -23,9 +26,31 @@ export default class CollapseHelper extends Component {
 
         return (
         <div>
-            <DropdownHelper toggleCollapse={this.toggleCollapse.bind(this)} 
-                deleteBoard={deleteBoard}
-                findBoard={findBoard}/>
+            <Row>
+                <Col md="1">
+                    <DropdownHelper 
+                        toggleName={"Quadro"}
+                        toggleCollapse={this.toggleCollapse.bind(this)} 
+                        callBackUpdate={(event) => {
+                                findBoard(event)
+                                this.toggleCollapse(event, "board");
+                            }
+                        }
+                        callBackDelete = {(event) => {
+                                deleteBoard(event)
+                            }
+                        }
+                        deleteBoard={deleteBoard}
+                        findBoard={findBoard}/>
+                </Col>
+                <Col md="1">
+                    <DropdownHelper 
+                        toggleName={"Lista"}
+                        toggleCollapse={this.toggleCollapse.bind(this)} 
+                        deleteBoard={deleteBoard}
+                        findBoard={findBoard}/>
+                </Col>
+            </Row>
 
             <Collapse isOpen={this.state.collapse}>
                 <Card>

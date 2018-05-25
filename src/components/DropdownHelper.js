@@ -18,22 +18,21 @@ export default class Example extends Component {
   }
 
   render() {
-    const { toggleCollapse, deleteBoard, findBoard } = this.props;
+    const { toggleCollapse, toggleName, callBackUpdate, callBackDelete } = this.props;
 
     return (
     <div>
       <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
         <DropdownToggle caret color="primary">
-            Quadro
+            {toggleName}
         </DropdownToggle>
         <DropdownMenu>
-            <DropdownItem onClick={toggleCollapse}>Adicionar</DropdownItem>
             <DropdownItem onClick={(event) => {
-                    findBoard(event)
-                    toggleCollapse(event);
-                }
-            }>Atualizar</DropdownItem>
-            <DropdownItem onClick={deleteBoard}>Excluir</DropdownItem>
+                    toggleCollapse(event,"board")
+                }   
+            }>Adicionar</DropdownItem>
+            <DropdownItem onClick={callBackUpdate}>Atualizar</DropdownItem>
+            <DropdownItem onClick={callBackDelete}>Excluir</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
