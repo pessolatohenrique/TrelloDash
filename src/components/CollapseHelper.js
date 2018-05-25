@@ -33,7 +33,7 @@ export default class CollapseHelper extends Component {
 
     render() {
         const { createBoard, deleteBoard , findBoard, updateBoard, findList,
-            createList, list_info, 
+            createList, updateList ,list_info, 
             invalid_list, invalid_board, board_info } = this.props;
         
         return (
@@ -97,7 +97,7 @@ export default class CollapseHelper extends Component {
                     <CardBody>
                         <ListForm 
                             createList={createList}
-                            // updateList={updateList}
+                            updateList={updateList}
                             invalid_list={invalid_list}
                             list_info={list_info}
                             toggleCollapse={this.toggleCollapse.bind(this)} 

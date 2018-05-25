@@ -21,7 +21,11 @@ export default class ListForm extends Component {
     componentWillReceiveProps() {
         const list_info = this.props.list_info;
         if (list_info) {
-            this.setState({list_name: list_info.name});
+            this.setState({
+                list_name: list_info.name,
+                idBoard: list_info.idBoard,
+                cards: list_info.cards
+            });
         }
         
     }

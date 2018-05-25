@@ -17,6 +17,7 @@ export default class Boards extends Component{
     this.updateBoard = this.updateBoard.bind(this);
     this.createList = this.createList.bind(this);
     this.findList = this.findList.bind(this);
+    this.updateList = this.updateList.bind(this);
     this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
@@ -71,6 +72,20 @@ export default class Boards extends Component{
         event.preventDefault();
         ListLogic.find(this.props.store, list_info);
         this.setState({collapse_list: true});
+    }
+
+    updateList(event, fields, list_id, callback) {
+        event.preventDefault();
+        if (fields.list_name.length <= 3) {
+            this.setState({invalid_list:true});
+            return false;
+        }
+
+        this.setState({invalid_list:false,
+            collapse_list: false
+        });
+        
+        ListLogic.update(this.props.store, fields, list_id);
     }
 
   createBoard(event, fields, callback) {
@@ -164,6 +179,7 @@ export default class Boards extends Component{
                         updateBoard={this.updateBoard}
                         createList={this.createList}
                         findList={this.findList}
+                        updateList={this.updateList}
                         board_info={board_info}
                         list_info={list_info}
                         invalid_board={invalid_board}

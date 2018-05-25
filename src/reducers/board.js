@@ -111,6 +111,17 @@ export function board(state = new List(), action) {
             state_find['list_info'] = action.fields;
             
             return state_find;
+        case "LIST-UPDATE":
+            const state_to = state;
+            const state_lists = state.board_lists;
+            const list_id = action.list_id;
+
+            const update_list = state_lists.map(item => item.id == list_id
+                ?action.fields:item);
+
+            state_to['board_lists'] = update_list;
+            
+            return state_to;
         default:
             // console.log("break");
             break;
