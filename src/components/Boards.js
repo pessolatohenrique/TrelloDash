@@ -4,6 +4,7 @@ import List from './List';
 import CollapseHelper from './CollapseHelper';
 import BoardLogic from '../logicals/BoardLogic';
 import ListLogic from '../logicals/ListLogic';
+import CardLogic from '../logicals/CardLogic';
 import classnames from 'classnames';
 import CustomToast from './CustomToast';
 
@@ -19,6 +20,7 @@ export default class Boards extends Component{
     this.createList = this.createList.bind(this);
     this.findList = this.findList.bind(this);
     this.updateList = this.updateList.bind(this);
+    this.createCard = this.createCard.bind(this);
     this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
@@ -30,6 +32,7 @@ export default class Boards extends Component{
         collapse_list: false,
         invalid_board: false,
         invalid_list: false,
+        invalid_card: false,
         fadeIn: true 
     };
   }
@@ -127,6 +130,17 @@ export default class Boards extends Component{
       }
   }
 
+  createCard(event, fields, callback) {
+        event.preventDefault();
+        if (fields.card_name.length <= 3) {
+            this.setState({invalid_card:true});
+            return false;
+        }
+        this.setState({invalid_card:false});   
+        CardLogic.create(this.props.store, fields);   
+        callback(event);
+    }
+
   /**
    * realiza a troca de abas do componente de navegação
    * @param {String} tab ID do quadro a ser trocado 
@@ -143,18 +157,11 @@ export default class Boards extends Component{
         });
     }
   }
-  
-  getFirstTab() {
-    // let store = this.props.store;
-    // let tail = this.state.boards;
-
-    // let first = tail[0];
-
-    // this.setState({activeTab: first.id});
-  }
 
   render() {
-    let { boards, board_lists, invalid_board, board_info, list_info ,invalid_list, collapse_list } = this.state;
+    let { boards, board_lists, invalid_board, board_info, list_info ,invalid_list, collapse_list, 
+        invalid_card
+    } = this.state;
 
     return (
       <div>
@@ -184,11 +191,15 @@ export default class Boards extends Component{
                         createList={this.createList}
                         findList={this.findList}
                         updateList={this.updateList}
+                        createCard={this.createCard}
                         board_info={board_info}
+                        board_lists={board_lists}
                         list_info={list_info}
                         invalid_board={invalid_board}
                         invalid_list={invalid_list}
                         collapse_list={collapse_list}
+                        invalid_card={invalid_card}
+                        
                     />
                     <Row>
                         <Col sm="12">

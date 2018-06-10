@@ -122,6 +122,24 @@ export function board(state = new List(), action) {
             state_to['board_lists'] = update_list;
             
             return state_to;
+        case "CARD-CREATE":
+            const state_card = state;
+            const card = action.card;
+            const board_cards = state_card.board_lists;
+
+            const belongs_to = board_cards.findIndex(function(element, index, array) {
+                return card.idList === element.id;
+            });
+
+            console.log(card.idList, belongs_to);
+
+            if (belongs_to !== -1) {
+                const new_card = board_cards[belongs_to].cards.concat(card);
+                board_cards[belongs_to].cards = new_card;
+            }
+
+            state_card['board_lists'] = board_cards;
+            return state_card;
         default:
             // console.log("break");
             break;

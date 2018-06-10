@@ -1,4 +1,4 @@
-import { listBoard, getBoardList, getCards, 
+import { listBoard, getCards, 
     createBoard, deleteBoard, findBoard, updateBoard } 
 from '../actions/actionCreator';
 
