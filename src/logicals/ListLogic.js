@@ -1,4 +1,6 @@
 import { create, find, update } from '../actions/actionListCreator';
+import { createToast } from '../common/ToastHelper';
+import { showError, catchError } from '../common/ErrorHelper';
 
 /**
  * classe contendo lógicas relacionadas a um Board
@@ -22,13 +24,17 @@ export default class ListLogic {
         }
 
         fetch(`https://api.trello.com/1/lists?name=${fields.list_name}&idBoard=${board_id}&key=${key}&token=${token}`, headers)
-        .then(response => response.json())
+        .then(response => {
+            catchError(response);
+            return response.json();
+        })
         .then(result => {
             result.idBoard = board_id;
             store.dispatch(create(result));
+            createToast("Lista adiciona com sucesso!");
         })
         .catch(error => {
-            console.log(error);
+            showError(error);
         });
     }
 
@@ -59,21 +65,19 @@ export default class ListLogic {
         }
 
         fetch(`https://api.trello.com/1/lists/${list_id}?name=${fields.list_name}&key=${key}&token=${token}`, headers)
-        .then(response => response.json())
+        .then(response => {
+            catchError(response);
+            return response.json()
+        })
         .then(result => {
             result.idBoard = fields.idBoard;
             result.cards = fields.cards;
             store.dispatch(update(result, list_id));
+            createToast("Lista atualizada com sucesso!");
         })
         .catch(error => {
-            console.log(error);
+            showError(error);
         });
-        /*
-        const result = {id: "59865f6e88f00d091f764fdd", 
-        cards: fields.cards,
-        idBoard: "59865f6e88f00d091f764fdd", name: fields.list_name};
-        store.dispatch(update(result, list_id));
-        */
     }
 
 }

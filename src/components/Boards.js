@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, Fade } from 'reactstrap';
 import List from './List';
 import CollapseHelper from './CollapseHelper';
 import BoardLogic from '../logicals/BoardLogic';
 import ListLogic from '../logicals/ListLogic';
 import classnames from 'classnames';
+import CustomToast from './CustomToast';
 
 export default class Boards extends Component{
   constructor(props) {
@@ -28,7 +29,8 @@ export default class Boards extends Component{
         collapse: false,
         collapse_list: false,
         invalid_board: false,
-        invalid_list: false 
+        invalid_list: false,
+        fadeIn: true 
     };
   }
 
@@ -156,19 +158,21 @@ export default class Boards extends Component{
 
     return (
       <div>
-
-        <Nav tabs>
-            {boards && boards.map((board, index) => 
-                <NavItem key={board.id}>
-                    <NavLink
-                    className={classnames({ active: this.state.activeTab === board.id })}
-                    onClick={() => { this.toggle(board.id, board.shortLink); }}
-                    >
-                    {board.name}
-                    </NavLink>
-                </NavItem>
-            )}
-        </Nav>
+        <CustomToast />
+        <Fade in={this.state.fadeIn} timeout={300}>
+            <Nav tabs>
+                {boards && boards.map((board, index) => 
+                    <NavItem key={board.id}>
+                        <NavLink
+                        className={classnames({ active: this.state.activeTab === board.id })}
+                        onClick={() => { this.toggle(board.id, board.shortLink); }}
+                        >
+                        {board.name}
+                        </NavLink>
+                    </NavItem>
+                )}
+            </Nav>
+        </Fade>
         <TabContent activeTab={this.state.activeTab}>
             {boards && boards.map(board => 
                 <TabPane tabId={board.id} key={board.id}>
@@ -189,9 +193,11 @@ export default class Boards extends Component{
                     <Row>
                         <Col sm="12">
                         {board_lists !== undefined && board_lists.map(list =>
+                        <Fade in={this.state.fadeIn} timeout={100} key={list.id}>
                             <List name={list.name} id={list.id} board_id={list.idBoard} cards={list.cards} key={list.id} 
                                 findList={this.findList}
                             />
+                        </Fade>
                         )}
                         </Col>
                     </Row>

@@ -2,6 +2,9 @@ import { listBoard, getBoardList, getCards,
     createBoard, deleteBoard, findBoard, updateBoard } 
 from '../actions/actionCreator';
 
+import { createToast } from '../common/ToastHelper';
+import { showError, catchError } from '../common/ErrorHelper';
+
 /**
  * classe contendo lógicas relacionadas a um Board
  */
@@ -30,13 +33,17 @@ export default class BoardLogic {
         }
 
         fetch(`https://api.trello.com/1/boards/?key=${key}&token=${token}`, headers)
-        .then(response => response.json())
+        .then(response => {
+            catchError(response);
+            return response.json();
+        })
         .then(board => {
             board.shortLink = board.id;
             store.dispatch(createBoard(board));
+            createToast("Quadro criado com sucesso!");
         })
         .catch(error => {
-            console.log(error);
+            showError(error);
         });
     }
 
@@ -71,13 +78,17 @@ export default class BoardLogic {
         }
 
         fetch(`https://api.trello.com/1/boards/${board_id}?name=${fields.board_name}&key=${key}&token=${token}`, headers)
-        .then(response => response.json())
+        .then(response => {
+            catchError(response);
+            return response.json();
+        })
         .then(board => {
             board.shortLink = board.id;
             store.dispatch(updateBoard(board));
+            createToast("Quadro atualizado com sucesso!");
         })
         .catch(error => {
-            console.log(error);
+            showError(error);
         });
     }
 
@@ -98,12 +109,17 @@ export default class BoardLogic {
         }
 
         fetch(`https://api.trello.com/1/boards/${board_id}/?key=${key}&token=${token}`, headers)
-        .then(response => response.json())
+        .then(response => {
+            catchError(response);
+            return response.json()
+        })
         .then(board => {
             store.dispatch(deleteBoard(board_id));
+            createToast("Quadro excluído com sucesso!");
+            
         })
         .catch(error => {
-            console.log(error);
+            showError(error);
         });
     }
 
@@ -131,12 +147,15 @@ export default class BoardLogic {
      */
     static getBoardList(store, shortLink, callback) {
         fetch(`https://api.trello.com/1/boards/${shortLink}/lists`)
-        .then(response => response.json())
+        .then(response => {
+            catchError(response);
+            return response.json();
+        })
         .then(result => {
             callback(result, store);
         })
         .catch(error => {
-            console.log(error);
+            showError(error);
         })
     }
 

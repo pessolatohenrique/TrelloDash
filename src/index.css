@@ -111,6 +111,16 @@ body {
     color: black;
 }
 
+.toast-body {
+    color: #828282;
+    padding-left: 0.5em;
+}
+
+.toast-body-white {
+    color: white;
+    padding-left: 0.5em;
+}
+
 .link_editable:hover {
     color: #008972 !important;
 }

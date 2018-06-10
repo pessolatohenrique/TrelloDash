@@ -116,7 +116,7 @@ export function board(state = new List(), action) {
             const state_lists = state.board_lists;
             const list_id = action.list_id;
 
-            const update_list = state_lists.map(item => item.id == list_id
+            const update_list = state_lists.map(item => item.id === list_id
                 ?action.fields:item);
 
             state_to['board_lists'] = update_list;
