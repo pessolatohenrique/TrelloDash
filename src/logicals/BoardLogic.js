@@ -53,7 +53,10 @@ export default class BoardLogic {
      * @param {String} board_id ID a ser pesquisado 
      */
     static find(store, board_id) {
-        fetch(`https://api.trello.com/1/boards/${board_id}`)
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+
+        fetch(`https://api.trello.com/1/boards/${board_id}?key=${key}&token=${token}`)
         .then(response => response.json())
         .then(result => {
             store.dispatch(findBoard(result));
@@ -129,7 +132,11 @@ export default class BoardLogic {
      * @param {*} store 
      */
     static list(store) {
-        fetch('https://api.trello.com/1/members/pessolatohenrique/boards')
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+
+        //"userdash" é o ID do time
+        fetch(`https://api.trello.com/1/organizations/userdash/boards?key=${key}&token=${token}`)
         .then(response => response.json())
         .then(result => {
             store.dispatch(listBoard(result));
@@ -146,7 +153,10 @@ export default class BoardLogic {
      * @param {Object} callback função que será executada após processamento
      */
     static getBoardList(store, shortLink, callback) {
-        fetch(`https://api.trello.com/1/boards/${shortLink}/lists`)
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+        
+        fetch(`https://api.trello.com/1/boards/${shortLink}/lists?key=${key}&token=${token}`)
         .then(response => {
             catchError(response);
             return response.json();
@@ -165,8 +175,11 @@ export default class BoardLogic {
      * @param {Array} list informações de uma lista, principalmente o seu ID
      */
     static getCards(store, list) {
+        const key = sessionStorage.getItem("key");
+        const token = sessionStorage.getItem("token");
+
         list.map (item => {
-            fetch(`https://api.trello.com/1/lists/${item.id}/cards`)
+            fetch(`https://api.trello.com/1/lists/${item.id}/cards?key=${key}&token=${token}`)
             .then(response => response.json())
             .then(cards => {
                 store.dispatch(getCards(item, cards));
