@@ -131,8 +131,6 @@ export function board(state = new List(), action) {
                 return card.idList === element.id;
             });
 
-            console.log(card.idList, belongs_to);
-
             if (belongs_to !== -1) {
                 const new_card = board_cards[belongs_to].cards.concat(card);
                 board_cards[belongs_to].cards = new_card;
@@ -140,8 +138,44 @@ export function board(state = new List(), action) {
 
             state_card['board_lists'] = board_cards;
             return state_card;
+        case "CARD-DELETE":
+            const state_delete = state;
+            
+            const list_delete = state_delete.board_lists
+                .find((item) => item.id === action.list_id);
+            const index_list = state_delete.board_lists
+                .findIndex((item) => item.id === action.list_id);
+            const cards_delete = list_delete.cards
+                .filter((item) => item.id !== action.card_id);
+
+            list_delete.cards = cards_delete;
+
+            state_delete.board_lists[index_list] = list_delete;
+        
+            return state_delete;
+        case "CARD-FIND":
+            const state_findcard = state;
+            state_findcard['card_info'] = action.fields;
+
+            return state_findcard;
+        case "CARD-UPDATE":
+            const state_cardup = state;
+            const list_cardup = state_cardup.board_lists
+                .find((item) => action.fields.idList === item.id);
+
+            const card_update = list_cardup.cards.map(item => item.id === action.card_id
+                ?action.fields:item);
+
+            list_cardup.cards = card_update;
+
+            const all_lists = state_cardup.board_lists.map(
+                item => item.id === list_cardup.id?list_cardup:item
+            );
+
+            state_cardup['board_lists'] = all_lists;
+            
+            return state_cardup;
         default:
-            // console.log("break");
             break;
     }
 

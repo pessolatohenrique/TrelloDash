@@ -3,9 +3,13 @@ export function create(card) {
 }
 
 export function find(fields) {
-    // return { type: 'LIST-FIND', fields};
+    return { type: 'CARD-FIND', fields};
 }
 
-export function update(fields, list_id) {
-    // return { type: 'LIST-UPDATE', fields, list_id};
+export function update(fields, card_id) {
+    return { type: 'CARD-UPDATE', fields, card_id};
+}
+
+export function deleteCard(card_id, list_id) {
+    return { type: 'CARD-DELETE', card_id, list_id};
 }

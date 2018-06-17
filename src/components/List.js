@@ -12,7 +12,7 @@ export default class List extends Component {
         return total_msg;
     }
     render() {
-        const { cards, findList } = this.props;
+        const { cards, findList, deleteCard, findCard } = this.props;
 
         return (
             cards.length > 0 &&
@@ -39,7 +39,9 @@ export default class List extends Component {
                 <div className="row">
                     {cards.map(item =>
                         <div className="col-md-4" key={item.id}>
-                            <CardBoard card={item}/>
+                            <CardBoard card={item} deleteCard={deleteCard}
+                                findCard={findCard}
+                                />
                         </div>
                     )}
                 </div>

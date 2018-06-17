@@ -21,6 +21,9 @@ export default class Boards extends Component{
     this.findList = this.findList.bind(this);
     this.updateList = this.updateList.bind(this);
     this.createCard = this.createCard.bind(this);
+    this.deleteCard = this.deleteCard.bind(this);
+    this.findCard = this.findCard.bind(this);
+    this.updateCard = this.updateCard.bind(this);
     this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
@@ -30,6 +33,7 @@ export default class Boards extends Component{
         list_info: {},
         collapse: false,
         collapse_list: false,
+        collapse_card: false,
         invalid_board: false,
         invalid_list: false,
         invalid_card: false,
@@ -47,6 +51,7 @@ export default class Boards extends Component{
             board_lists: store.getState().board['board_lists'],
             board_info: store.getState().board['board_info'],
             list_info: store.getState().board['list_info'],
+            card_info: store.getState().board['card_info']
         });
       });
     }
@@ -61,7 +66,7 @@ export default class Boards extends Component{
     sessionStorage.setItem("token", "2b8048cfbb27c0f951f1632b13d58fc9541332bdc6bc4f06c022b7c02c244771");
   }
 
-  createList(event, fields, callback) {
+    createList(event, fields, callback) {
         const board_id = this.state.activeTab;
         event.preventDefault();
         if (fields.list_name.length <= 3) {
@@ -93,44 +98,44 @@ export default class Boards extends Component{
         ListLogic.update(this.props.store, fields, list_id);
     }
 
-  createBoard(event, fields, callback) {
-      event.preventDefault();
-      if (fields.board_name.length <= 3) {
-          this.setState({invalid_board:true});
-          return false;
-      }
-      this.setState({invalid_board:false});   
-      BoardLogic.create(this.props.store, fields);   
-      callback(event);
-  }
-
-  updateBoard(event, fields, board_id, callback) {
-      event.preventDefault();
-      if (fields.board_name.length <= 3) {
-        this.setState({invalid_board:true});
-        return false;
+    createBoard(event, fields, callback) {
+        event.preventDefault();
+        if (fields.board_name.length <= 3) {
+            this.setState({invalid_board:true});
+            return false;
+        }
+        this.setState({invalid_board:false});   
+        BoardLogic.create(this.props.store, fields);   
+        callback(event);
     }
-    this.setState({invalid_board:false});
-    BoardLogic.update(this.props.store, fields, board_id);
-    callback(event);
-  }
 
-  findBoard(event) {
-      event.preventDefault();
-      const board_id = this.state.activeTab;
-      BoardLogic.find(this.props.store, board_id);
-  }
+    updateBoard(event, fields, board_id, callback) {
+        event.preventDefault();
+        if (fields.board_name.length <= 3) {
+            this.setState({invalid_board:true});
+            return false;
+        }
+        this.setState({invalid_board:false});
+        BoardLogic.update(this.props.store, fields, board_id);
+        callback(event);
+    }
 
-  deleteBoard(event) {
-      event.preventDefault();
-      const resp = window.confirm("Todas as listas e cards serão apagados. Deseja realmente excluir o quadro?");
-      const board_id = this.state.activeTab;
-      if (resp) {
-          BoardLogic.delete(this.props.store, board_id);
-      }
-  }
+    findBoard(event) {
+        event.preventDefault();
+        const board_id = this.state.activeTab;
+        BoardLogic.find(this.props.store, board_id);
+    }
 
-  createCard(event, fields, callback) {
+    deleteBoard(event) {
+        event.preventDefault();
+        const resp = window.confirm("Todas as listas e cards serão apagados. Deseja realmente excluir o quadro?");
+        const board_id = this.state.activeTab;
+        if (resp) {
+            BoardLogic.delete(this.props.store, board_id);
+        }
+    }
+
+    createCard(event, fields, callback) {
         event.preventDefault();
         if (fields.card_name.length <= 3) {
             this.setState({invalid_card:true});
@@ -139,6 +144,30 @@ export default class Boards extends Component{
         this.setState({invalid_card:false});   
         CardLogic.create(this.props.store, fields);   
         callback(event);
+    }
+
+    deleteCard(card_id, list_id) {
+        const resp = window.confirm("Deseja realmente excluir este card?");
+
+        if (resp) {
+            CardLogic.delete(this.props.store, card_id, list_id);
+        }
+    }
+
+    findCard(card_info) {
+        CardLogic.find(this.props.store, card_info);
+        this.setState({collapse_card: true});
+    }
+
+    updateCard(event, fields, card_id) {
+        event.preventDefault();
+        event.preventDefault();
+        if (fields.card_name.length <= 3) {
+            this.setState({invalid_card:true});
+            return false;
+        }
+        this.setState({invalid_card:false, collapse_card: false});
+        CardLogic.update(this.props.store, fields, card_id);
     }
 
   /**
@@ -153,14 +182,15 @@ export default class Boards extends Component{
         });
         this.setState({
             activeTab: tab,
-            collapse_list: false
+            collapse_list: false,
+            collapse_card: false
         });
     }
   }
 
   render() {
     let { boards, board_lists, invalid_board, board_info, list_info ,invalid_list, collapse_list, 
-        invalid_card
+        invalid_card, collapse_card, card_info
     } = this.state;
 
     return (
@@ -192,12 +222,15 @@ export default class Boards extends Component{
                         findList={this.findList}
                         updateList={this.updateList}
                         createCard={this.createCard}
+                        updateCard={this.updateCard}
                         board_info={board_info}
                         board_lists={board_lists}
                         list_info={list_info}
+                        card_info={card_info}
                         invalid_board={invalid_board}
                         invalid_list={invalid_list}
                         collapse_list={collapse_list}
+                        collapse_card={collapse_card}
                         invalid_card={invalid_card}
                         
                     />
@@ -206,7 +239,8 @@ export default class Boards extends Component{
                         {board_lists !== undefined && board_lists.map(list =>
                         <Fade in={this.state.fadeIn} timeout={100} key={list.id}>
                             <List name={list.name} id={list.id} board_id={list.idBoard} cards={list.cards} key={list.id} 
-                                findList={this.findList}
+                                findList={this.findList} deleteCard={this.deleteCard}
+                                findCard={this.findCard}
                             />
                         </Fade>
                         )}

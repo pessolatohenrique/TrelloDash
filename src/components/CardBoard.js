@@ -34,7 +34,7 @@ export default class CardBoard extends Component {
     }
 
     render() {
-        const { card } = this.props;
+        const { card, deleteCard, findCard } = this.props;
 
         return (
             <div className="board-card">
@@ -53,8 +53,15 @@ export default class CardBoard extends Component {
                                 Atualizado em {this.showDate(card.dateLastActivity)}
                             </small>
                         </CardText>
-                        <Button color="primary" className="space-button">Atualizar</Button>
-                        <Button color="danger">Excluir</Button>
+                        <Button color="primary" className="space-button"
+                            onClick={() => findCard(card)}
+                            >
+                            Atualizar
+                        </Button>
+                        <Button type="button" color="danger" 
+                            onClick={() => {deleteCard(card.id, card.idList)}}>
+                            Excluir
+                        </Button>
                     </CardBody>
                 </Card>
             </div>
