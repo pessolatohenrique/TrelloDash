@@ -25,3 +25,9 @@ export function catchError(response) {
         
     }
 }
+
+export function catchLoginError(response) {
+    if (!response.ok) {
+        throw Error('Chave ou token inválidos. Verifique!');
+    }
+}

@@ -1,6 +1,7 @@
 import { create, find, update } from '../actions/actionListCreator';
 import { createToast } from '../common/ToastHelper';
 import { showError, catchError } from '../common/ErrorHelper';
+import { getAuthParameters } from '../common/AuthHelper';
 
 /**
  * classe contendo lógicas relacionadas a um Board
@@ -13,9 +14,6 @@ export default class ListLogic {
      * @param {String} board_id ID de um quadro
      */
     static create(store, fields, board_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "POST",
             headers: new Headers({
@@ -23,7 +21,7 @@ export default class ListLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/lists?name=${fields.list_name}&idBoard=${board_id}&key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/lists?name=${fields.list_name}&idBoard=${board_id}&${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json();
@@ -54,9 +52,6 @@ export default class ListLogic {
      * @param {String} list_id ID da lista
      */
     static update(store, fields, list_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "PUT",
             headers: new Headers({
@@ -64,7 +59,7 @@ export default class ListLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/lists/${list_id}?name=${fields.list_name}&key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/lists/${list_id}?name=${fields.list_name}&${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json()

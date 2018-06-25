@@ -1,6 +1,7 @@
 import { create, deleteCard, find, update } from '../actions/actionCardCreator';
 import { createToast } from '../common/ToastHelper';
 import { showError, catchError } from '../common/ErrorHelper';
+import { getAuthParameters } from '../common/AuthHelper';
 
 /**
  * classe contendo lógicas relacionadas a um Card
@@ -12,9 +13,6 @@ export default class CardLogic {
      * @param {Object} fields objeto descrevendo campos e respectivos valores 
      */
     static create(store, fields) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "POST",
             headers: new Headers({
@@ -22,7 +20,7 @@ export default class CardLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/cards?name=${fields.card_name}&idList=${fields.list_id}&desc=${fields.card_description}&key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/cards?name=${fields.card_name}&idList=${fields.list_id}&desc=${fields.card_description}&${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json();
@@ -53,9 +51,6 @@ export default class CardLogic {
      * @param {String} list_id ID da lista
      */
     static delete(store, card_id, list_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "PUT",
             headers: new Headers({
@@ -63,7 +58,7 @@ export default class CardLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/cards/${card_id}?closed=true&key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/cards/${card_id}?closed=true&${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json();
@@ -84,9 +79,6 @@ export default class CardLogic {
      * @param {String} card_id ID do card a ser atualizado
      */
     static update(store, fields, card_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "PUT",
             headers: new Headers({
@@ -94,7 +86,7 @@ export default class CardLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/cards/${card_id}?idList=${fields.list_id}&name=${fields.card_name}&desc=${fields.card_description}&key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/cards/${card_id}?idList=${fields.list_id}&name=${fields.card_name}&desc=${fields.card_description}&${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json();

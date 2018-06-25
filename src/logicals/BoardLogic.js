@@ -4,6 +4,7 @@ from '../actions/actionCreator';
 
 import { createToast } from '../common/ToastHelper';
 import { showError, catchError } from '../common/ErrorHelper';
+import { getAuthParameters } from '../common/AuthHelper';
 
 /**
  * classe contendo lógicas relacionadas a um Board
@@ -15,9 +16,6 @@ export default class BoardLogic {
      * @param {Object} fields objeto descrevendo campos e respectivos valores 
      */
     static create(store, fields) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "POST",
             headers: new Headers({
@@ -32,7 +30,7 @@ export default class BoardLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/boards/?key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/boards/?${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json();
@@ -53,10 +51,7 @@ export default class BoardLogic {
      * @param {String} board_id ID a ser pesquisado 
      */
     static find(store, board_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
-        fetch(`https://api.trello.com/1/boards/${board_id}?key=${key}&token=${token}`)
+        fetch(`https://api.trello.com/1/boards/${board_id}?${getAuthParameters()}`)
         .then(response => response.json())
         .then(result => {
             store.dispatch(findBoard(result));
@@ -70,9 +65,6 @@ export default class BoardLogic {
      * @param {String} board_id ID a ser atualizado 
      */
     static update(store, fields, board_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "PUT",
             headers: new Headers({
@@ -80,7 +72,7 @@ export default class BoardLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/boards/${board_id}?name=${fields.board_name}&key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/boards/${board_id}?name=${fields.board_name}&${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json();
@@ -101,9 +93,6 @@ export default class BoardLogic {
      * @param {String} board_id ID do board, fornecido pelo Trello 
      */
     static delete(store, board_id) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         const headers = {
             method: "DELETE",
             headers: new Headers({
@@ -111,7 +100,7 @@ export default class BoardLogic {
             })
         }
 
-        fetch(`https://api.trello.com/1/boards/${board_id}/?key=${key}&token=${token}`, headers)
+        fetch(`https://api.trello.com/1/boards/${board_id}/?${getAuthParameters()}`, headers)
         .then(response => {
             catchError(response);
             return response.json()
@@ -132,11 +121,8 @@ export default class BoardLogic {
      * @param {*} store 
      */
     static list(store) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         //"userdash" é o ID do time
-        fetch(`https://api.trello.com/1/organizations/userdash/boards?key=${key}&token=${token}`)
+        fetch(`https://api.trello.com/1/organizations/userdash/boards?${getAuthParameters()}`)
         .then(response => response.json())
         .then(result => {
             store.dispatch(listBoard(result));
@@ -152,11 +138,8 @@ export default class BoardLogic {
      * @param {String} shortLink link curto para a API do trello realizar a busca
      * @param {Object} callback função que será executada após processamento
      */
-    static getBoardList(store, shortLink, callback) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-        
-        fetch(`https://api.trello.com/1/boards/${shortLink}/lists?key=${key}&token=${token}`)
+    static getBoardList(store, shortLink, callback) {        
+        fetch(`https://api.trello.com/1/boards/${shortLink}/lists?${getAuthParameters()}`)
         .then(response => {
             catchError(response);
             return response.json();
@@ -175,11 +158,8 @@ export default class BoardLogic {
      * @param {Array} list informações de uma lista, principalmente o seu ID
      */
     static getCards(store, list) {
-        const key = sessionStorage.getItem("key");
-        const token = sessionStorage.getItem("token");
-
         list.map (item => {
-            fetch(`https://api.trello.com/1/lists/${item.id}/cards?key=${key}&token=${token}`)
+            fetch(`https://api.trello.com/1/lists/${item.id}/cards?${getAuthParameters()}`)
             .then(response => response.json())
             .then(cards => {
                 store.dispatch(getCards(item, cards));

@@ -24,7 +24,6 @@ export default class Boards extends Component{
     this.deleteCard = this.deleteCard.bind(this);
     this.findCard = this.findCard.bind(this);
     this.updateCard = this.updateCard.bind(this);
-    this.saveStorage = this.saveStorage.bind(this);
     this.state = {
         activeTab: '1',
         boards: [],
@@ -41,9 +40,7 @@ export default class Boards extends Component{
     };
   }
 
-  componentWillMount(){
-      this.saveStorage();
-      
+  componentWillMount(){      
       let store = this.props.store;
       store.subscribe(() => {
         this.setState({
@@ -59,11 +56,6 @@ export default class Boards extends Component{
   componentDidMount() {
      BoardLogic.list(this.props.store);
     //  BoardLogic.getBoardList(this.props.store, "OoLAzfVp");
-  }
-
-  saveStorage() {
-    sessionStorage.setItem("key", "3035a2cb9f26384284e94d2f545f2c0c");
-    sessionStorage.setItem("token", "2b8048cfbb27c0f951f1632b13d58fc9541332bdc6bc4f06c022b7c02c244771");
   }
 
     createList(event, fields, callback) {

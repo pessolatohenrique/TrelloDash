@@ -13,6 +13,10 @@ import {
     DropdownItem 
 } from 'reactstrap';
 
+import { createToast } from '../common/ToastHelper';
+import { destroySession } from '../common/AuthHelper';
+import { browserHistory } from 'react-router';
+
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faCoffee from '@fortawesome/fontawesome-free-solid/faCoffee';
 
@@ -21,6 +25,8 @@ class MainMenu extends Component {
         super(props);
 
         this.toggle = this.toggle.bind(this);
+        this.logoutUser = this.logoutUser.bind(this);
+
         this.state = {
             isOpen: false
         };
@@ -30,6 +36,12 @@ class MainMenu extends Component {
         this.setState({
             isOpen: !this.state.isOpen
         });
+    }
+
+    logoutUser() {
+        destroySession();
+        browserHistory.push('/');
+        createToast("Deslogado com sucesso!");
     }
 
     render() {
@@ -65,11 +77,25 @@ class MainMenu extends Component {
                         <FontAwesomeIcon icon={faCoffee} />
                         &nbsp;
                         <strong>
-                            Henrique Pessolato
+                            {localStorage.getItem('fullname')}
                         </strong>
                       </DropdownToggle>
                       <DropdownMenu right>
+                        <DropdownItem className="profile-menu">
+                            <img src={`http://trello-avatars.s3.amazonaws.com/${localStorage.getItem('avatar_hash')}/170.png`}
+                                alt="Foto de perfil" 
+                            />
+                        </DropdownItem>
                         <DropdownItem>
+                            <strong>Nome Completo: </strong>{localStorage.getItem('fullname')}
+                        </DropdownItem>
+                        <DropdownItem>
+                            <strong>Usuário: </strong>@{localStorage.getItem('username')}
+                        </DropdownItem>
+                        <DropdownItem>
+                            <strong>E-mail: </strong>{localStorage.getItem('email')}
+                        </DropdownItem>
+                        <DropdownItem className="action-button" onClick={this.logoutUser}>
                             Logout
                         </DropdownItem>
                       </DropdownMenu>
