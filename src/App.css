@@ -22,6 +22,7 @@
   font-size: large;
 }
 
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -69,3 +70,63 @@
     padding-top: 0.5em !important;
     margin-top: 1em !important;
 }
+
+.indicative {
+    padding: 0.5em 1em 1em;
+    color: white;
+    border-radius: .25rem !important;
+}
+
+.indicative .card-title {
+    font-size: 1.28em;
+    font-weight: 600;
+}
+
+.indicative .card-subtitle {
+    font-weight: normal;
+}
+
+.card-primary {
+    background-color: #20A8DA !important;
+    border-color: #187da0 !important;
+}
+
+.card-success {
+    background-color: #4dbd74!important;
+    border-color: #349C56 !important;
+}
+
+.card-warning {
+    background-color: #ffc107!important;
+    border-color: #daaa17 !important;
+}
+
+.card-info {
+    background-color: #63c2de!important;
+    border-color: #29a3c7;
+}
+
+.space-div {
+    padding-top: 2em;
+}
+
+.space-div h5 {
+    margin-bottom: 1em;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid #ccc;
+}
+
+.loader{ 
+    background: rgba( 255, 255, 255, .8 ) 
+    url('pacman_loader.gif')
+    50% 50% no-repeat; 
+    background-position: 50% 50%;
+    width: 100%; 
+    height: 100%; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    z-index: 1001; 
+}
+
+/* <img src={process.env.PUBLIC_URL + "/pacman_loader.gif"} alt="Loader gif" /> */

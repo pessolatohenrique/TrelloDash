@@ -1,4 +1,4 @@
-import { create, deleteCard, find, update } from '../actions/actionCardCreator';
+import { create, deleteCard, find, update, getCardsByUser } from '../actions/actionCardCreator';
 import { createToast } from '../common/ToastHelper';
 import { showError, catchError } from '../common/ErrorHelper';
 import { getAuthParameters } from '../common/AuthHelper';
@@ -98,6 +98,52 @@ export default class CardLogic {
         .catch(error => {
             showError(error);
         });
+    }
+
+    /**
+     * realiza a listagem de todos os cards do usuário logado
+     */
+    static listFromUser(store) {
+        const promise = new Promise(function(resolve, reject) {
+            const username = localStorage.getItem('username');
+            fetch(`https://api.trello.com/1/members/${username}/cards?fields=id,name,idBoard&${getAuthParameters()}`)
+            .then(response => {
+                catchError(response);
+                return response.json();
+            })
+            .then(result => {
+                store.dispatch(getCardsByUser(result));
+                resolve(result);
+            })
+            .catch(error => {
+                showError(error);
+            });
+        });
+
+        return promise;
+    }
+
+    /**
+     * utilizado para cards que são buscados sem associação direta do quadro
+     * a ideia é agrupar os cards por quadro
+     * @param {Array} ids_unique IDs dos quadros 
+     * @param {Array} cards lista de quadros encontrados
+     * @return {Array} uniques lista de quadros com cards associados 
+     */
+    static associateWithBoard(ids_unique, cards) {
+        const uniques = ids_unique;
+        uniques.map(unique => {
+            cards.map(card => {
+                if (unique.board_id === card.idBoard) {
+                    unique.cards.push(card);    
+                }
+                return true;
+            })
+
+            return true;
+        });
+
+        return uniques;
     }
 
 }

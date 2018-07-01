@@ -14,7 +14,7 @@ export default class LoginLogic {
         })
         .then(user_info => {
             saveSession(key, token, user_info);
-            browserHistory.push('/general');
+            browserHistory.push('/dashboard');
             createToast("Logado com sucesso!");
         })
         .catch(error => {

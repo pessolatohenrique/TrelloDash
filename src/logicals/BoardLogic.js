@@ -1,10 +1,12 @@
 import { listBoard, getCards, 
-    createBoard, deleteBoard, findBoard, updateBoard } 
+    createBoard, deleteBoard, findBoard, updateBoard, getLabels,
+    getMostBoards } 
 from '../actions/actionCreator';
 
 import { createToast } from '../common/ToastHelper';
 import { showError, catchError } from '../common/ErrorHelper';
 import { getAuthParameters } from '../common/AuthHelper';
+import CardLogic from './CardLogic';
 
 /**
  * classe contendo lógicas relacionadas a um Board
@@ -119,17 +121,26 @@ export default class BoardLogic {
      * realiza a listagem de quadros para um usuário
      * para que a API retorne, o quadro deve ser público
      * @param {*} store 
+     * @return { Object } objeto promise
      */
     static list(store) {
-        //"userdash" é o ID do time
-        fetch(`https://api.trello.com/1/organizations/userdash/boards?${getAuthParameters()}`)
-        .then(response => response.json())
-        .then(result => {
-            store.dispatch(listBoard(result));
-        })
-        .catch(error => {
-            console.log(error);
-        })
+        const promise = new Promise(function(resolve, reject){
+            //"userdash" é o ID do time
+            fetch(`https://api.trello.com/1/organizations/userdash/boards?${getAuthParameters()}`)
+            .then(response => {
+                catchError(response);
+                return response.json()
+            })
+            .then(result => {
+                store.dispatch(listBoard(result));
+                resolve(result);
+            })
+            .catch(error => {
+                showError(error);
+            })
+        });
+
+        return promise;
     }
 
     /**
@@ -170,5 +181,89 @@ export default class BoardLogic {
 
             return true;
         });
+    }
+
+    /**
+     * obtem todas as etiquetas válidas dos quadros
+     * @param {*} store 
+     * @param { Array } boards quadros disponíveis 
+     */
+    static getLabels(store, boards) {
+        const promise = new Promise(function (resolve, reject) {
+            const final_labels = [];
+        
+            boards.map(item => {
+                const labels = Object.entries(item.labelNames);
+                labels.map(item => item[1] !== "" 
+                    ?final_labels.push(item):'');
+
+                return true;
+            });
+    
+            store.dispatch(getLabels(final_labels));
+
+            resolve(final_labels);
+        });
+
+        return promise;
+    }
+
+    /**
+     * com base em uma lista de array com IDs de quadros
+     * retorna os valores únicos, sem repetições
+     * @param { Array } boards_ids lista com os IDs dos quadros
+     * @return { Array } ids_unique lista com IDs únicos
+     */
+    static getUniqueIds(boards_ids) {
+        const ids_unique = [];
+        
+        boards_ids.map(
+            (value, index) => {
+                if (boards_ids.indexOf(value) === index) {
+                    const temp_object = {
+                        board_id: value,
+                        cards: []
+                    };
+                    ids_unique.push(temp_object);
+                }
+                return true;
+            }
+        );
+
+        return ids_unique;
+    }
+
+    /**
+     * obtem os quadros mais utilizados
+     * ou seja, os quadros que mais possuem cards
+     * @param {*} store 
+     * @param {Array} cards lista com cartões encontrados
+     * @param {Array} boards lista com informações gerais dos quadros
+     * @return {Array} final_list lista com quadros mais utilizados 
+     */
+    static getMostUse(store, cards, boards) {
+        const boards_ids = cards.map(item => item.idBoard);
+        const ids_unique = this.getUniqueIds(boards_ids);
+
+        const updated_ids = CardLogic.associateWithBoard(ids_unique, cards);
+
+        updated_ids.sort(function(a, b){
+            return b.cards.length - a.cards.length;
+        });
+
+        updated_ids.map((updated) => {
+            boards.map((board, key) => {
+                if (updated.board_id === board.id) {
+                    updated.board_name = board.name;
+                } 
+                return true;
+            })
+            return true;
+        });
+
+        const filtered = updated_ids.filter(item => item.hasOwnProperty('board_name'));
+        const final_filter = filtered.slice(0, 3);
+
+        store.dispatch(getMostBoards(final_filter));        
     }
 }

@@ -13,3 +13,7 @@ export function update(fields, card_id) {
 export function deleteCard(card_id, list_id) {
     return { type: 'CARD-DELETE', card_id, list_id};
 }
+
+export function getCardsByUser(cards) {
+    return {type: 'ALL-CARDS', cards};
+}

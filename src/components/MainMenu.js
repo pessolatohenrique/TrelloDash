@@ -17,7 +17,7 @@ import { createToast } from '../common/ToastHelper';
 import { destroySession } from '../common/AuthHelper';
 import { browserHistory } from 'react-router';
 
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faCoffee from '@fortawesome/fontawesome-free-solid/faCoffee';
 
 class MainMenu extends Component {
@@ -53,25 +53,11 @@ class MainMenu extends Component {
                 <Collapse isOpen={this.state.isOpen} navbar>
                   <Nav className="ml-auto" navbar>
                     <NavItem>
-                        <NavLink href="/components/">Visão Geral</NavLink>
+                        <NavLink href="/dashboard">Dashboard</NavLink>
                     </NavItem>
-                    <UncontrolledDropdown nav inNavbar>
-                      <DropdownToggle nav caret>
-                            Gráficos
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem>
-                          Option 1
-                        </DropdownItem>
-                        <DropdownItem>
-                          Option 2
-                        </DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem>
-                          Reset
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
+                    <NavItem>
+                        <NavLink href="/general">Visão Geral</NavLink>
+                    </NavItem>
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle nav>
                         <FontAwesomeIcon icon={faCoffee} />

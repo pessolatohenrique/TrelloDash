@@ -25,3 +25,11 @@ export function findBoard(board) {
 export function updateBoard(board) {
     return {type: 'BOARD-UPDATE', board};
 }
+
+export function getLabels(labels) {
+    return {type: 'ALL-LABELS', labels};
+}
+
+export function getMostBoards(boards) {
+    return {type: 'MOST-BOARDS', boards};
+}

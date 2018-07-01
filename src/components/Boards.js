@@ -7,6 +7,7 @@ import ListLogic from '../logicals/ListLogic';
 import CardLogic from '../logicals/CardLogic';
 import classnames from 'classnames';
 import CustomToast from './CustomToast';
+import Loader from './Loader';
 
 export default class Boards extends Component{
   constructor(props) {
@@ -36,12 +37,16 @@ export default class Boards extends Component{
         invalid_board: false,
         invalid_list: false,
         invalid_card: false,
-        fadeIn: true 
+        fadeIn: true,
+        loader_status: false
     };
   }
 
   componentWillMount(){      
       let store = this.props.store;
+      
+      this.setState( { loader_status : true });
+
       store.subscribe(() => {
         this.setState({
             boards : store.getState().board['boards'],
@@ -49,7 +54,7 @@ export default class Boards extends Component{
             board_info: store.getState().board['board_info'],
             list_info: store.getState().board['list_info'],
             card_info: store.getState().board['card_info']
-        });
+        }, () => this.setState({ loader_status: false }));
       });
     }
 
@@ -182,12 +187,15 @@ export default class Boards extends Component{
 
   render() {
     let { boards, board_lists, invalid_board, board_info, list_info ,invalid_list, collapse_list, 
-        invalid_card, collapse_card, card_info
+        invalid_card, collapse_card, card_info, loader_status
     } = this.state;
 
     return (
       <div>
         <CustomToast />
+
+        {loader_status && <Loader />}
+
         <Fade in={this.state.fadeIn} timeout={300}>
             <Nav tabs>
                 {boards && boards.map((board, index) => 
