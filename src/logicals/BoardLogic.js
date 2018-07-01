@@ -149,18 +149,22 @@ export default class BoardLogic {
      * @param {String} shortLink link curto para a API do trello realizar a busca
      * @param {Object} callback função que será executada após processamento
      */
-    static getBoardList(store, shortLink, callback) {        
-        fetch(`https://api.trello.com/1/boards/${shortLink}/lists?${getAuthParameters()}`)
-        .then(response => {
-            catchError(response);
-            return response.json();
-        })
-        .then(result => {
-            callback(result, store);
-        })
-        .catch(error => {
-            showError(error);
-        })
+    static getBoardList(shortLink) {     
+        let promise = new Promise(function(resolve, reject) {
+            fetch(`https://api.trello.com/1/boards/${shortLink}/lists?${getAuthParameters()}`)
+            .then(response => {
+                catchError(response);
+                return response.json();
+            })
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                showError(error);
+            })
+        });
+
+        return promise;
     }
 
     /**

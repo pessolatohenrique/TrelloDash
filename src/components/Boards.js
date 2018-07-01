@@ -174,9 +174,10 @@ export default class Boards extends Component{
    */
   toggle(tab, shortLink) {
     if (this.state.activeTab !== tab) {
-        BoardLogic.getBoardList(this.props.store, shortLink, function(response, store) {
-            BoardLogic.getCards(store, response);
-        });
+        
+        BoardLogic.getBoardList(shortLink)
+        .then(response => BoardLogic.getCards(this.props.store, response));
+
         this.setState({
             activeTab: tab,
             collapse_list: false,
