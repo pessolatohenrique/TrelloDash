@@ -33,3 +33,7 @@ export function getLabels(labels) {
 export function getMostBoards(boards) {
     return {type: 'MOST-BOARDS', boards};
 }
+
+export function getBoardToSelect(boards) {
+    return {type: 'BOARD-SELECT', boards};
+}

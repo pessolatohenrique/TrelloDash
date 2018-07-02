@@ -17,3 +17,11 @@ export function deleteCard(card_id, list_id) {
 export function getCardsByUser(cards) {
     return {type: 'ALL-CARDS', cards};
 }
+
+export function calculateTotalByList(lists) {
+    return {type: 'TOTAL-LISTS', lists};
+}
+
+export function groupLabels(labels) {
+    return {type: 'GROUP-LABELS', labels};
+}

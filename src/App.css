@@ -129,4 +129,8 @@
     z-index: 1001; 
 }
 
+.most-indicatives:last-child {
+    padding-bottom: 2.5em;
+}
+
 /* <img src={process.env.PUBLIC_URL + "/pacman_loader.gif"} alt="Loader gif" /> */

@@ -1,6 +1,6 @@
 import { listBoard, getCards, 
     createBoard, deleteBoard, findBoard, updateBoard, getLabels,
-    getMostBoards } 
+    getMostBoards, getBoardToSelect } 
 from '../actions/actionCreator';
 
 import { createToast } from '../common/ToastHelper';
@@ -173,18 +173,23 @@ export default class BoardLogic {
      * @param {Array} list informações de uma lista, principalmente o seu ID
      */
     static getCards(store, list) {
-        list.map (item => {
-            fetch(`https://api.trello.com/1/lists/${item.id}/cards?${getAuthParameters()}`)
-            .then(response => response.json())
-            .then(cards => {
-                store.dispatch(getCards(item, cards));
-            })
-            .catch(error => {
-                console.log(error);
+        const promise = new Promise(function(resolve, reject) {
+            list.map (item => {
+                fetch(`https://api.trello.com/1/lists/${item.id}/cards?${getAuthParameters()}`)
+                .then(response => response.json())
+                .then(cards => {
+                    store.dispatch(getCards(item, cards));
+                    resolve(cards);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+    
+                return true;
             });
-
-            return true;
         });
+        
+        return promise;
     }
 
     /**
@@ -269,5 +274,25 @@ export default class BoardLogic {
         const final_filter = filtered.slice(0, 3);
 
         store.dispatch(getMostBoards(final_filter));        
+    }
+
+    /**
+     * realiza o mapeamento de quadros para o Select2
+     * @param {*} store 
+     * @param {Array} boards lista com informações gerais dos quadros
+     */
+    static mapToSelect(store, boards) {
+        const select_array = [];
+
+        boards.map(item => {
+            const temp_object = {
+                "value": item.shortLink,
+                "label": item.name
+            };
+            select_array.push(temp_object);
+            return true;
+        })
+
+        store.dispatch(getBoardToSelect(select_array));        
     }
 }

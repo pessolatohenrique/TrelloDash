@@ -1,4 +1,7 @@
-import { create, deleteCard, find, update, getCardsByUser } from '../actions/actionCardCreator';
+import { create, deleteCard, find, update, getCardsByUser,
+    calculateTotalByList, groupLabels 
+} from '../actions/actionCardCreator';
+import { getLabels } from '../actions/actionCreator';
 import { createToast } from '../common/ToastHelper';
 import { showError, catchError } from '../common/ErrorHelper';
 import { getAuthParameters } from '../common/AuthHelper';
@@ -146,4 +149,92 @@ export default class CardLogic {
         return uniques;
     }
 
+    /**
+     * realiza o mapeamento de totais de acordo com as listas enviadas por parâmetro
+     * @param {*} store 
+     * @param {Array} lists listas encontradas
+     */
+    static mapTotalByList(store, lists) {
+        const promise = new Promise(function(resolve, reject) {
+            const array_chart = [];
+            array_chart.push(['Lista', 'Total de Cartões']);
+    
+            if (lists) {
+                lists.map(item => {
+                    const tmp_array = [item.name, item.cards.length];
+                    array_chart.push(tmp_array);
+                    return true;
+                })
+    
+                store.dispatch(calculateTotalByList(array_chart));
+                resolve(array_chart);
+            }
+        })
+
+        return promise;
+    }
+
+    /**
+     * realiza a unção de todos os cards, nos quais estavam agrupados em listas
+     * @param {*} store
+     * @param {Array} lists listas encontradas
+     */
+    static joinCards(store, lists) {
+        const promise = new Promise(function(resolve, reject) {
+            const array_cards = [];
+    
+            if (lists) {
+                lists.map(item => {
+                    const cards = item.cards;
+                    cards.map(card => {
+                        array_cards.push(card);
+                        return true;
+                    })
+                    
+                    return true;
+                })
+                
+                store.dispatch(getCardsByUser(array_cards));
+                resolve(array_cards);
+            }
+        })
+
+        return promise;
+    }
+
+    /**
+     * realiza a contagem de labels de cartões, para um quadro específico
+     * @param {Array} boards lista de quadros
+     * @param {String} board_id ID do quadro selecionado
+     */
+    static countLabels(store, boards, board_id, cards) {
+        const board_find = boards.find(item => item.shortLink === board_id);
+        const board_labels = Object.entries(board_find.labelNames);
+        const valid_labels = board_labels.filter(item => item[1] !== "");
+        const final_array = [];
+
+        final_array.push(["Etiqueta", "Total"]);
+        store.dispatch(getLabels(valid_labels));
+
+        valid_labels.map(label => {
+            const tmp_array = [];
+            let total = 0;
+            cards.map(card => {
+                const labels_card = card.labels;
+                labels_card.map(labelcard => {
+                    if (labelcard.name === label[1]) {
+                        total++;
+                    }
+                    return true;
+                })
+                return true;
+            })
+            tmp_array[0] = label[1];
+            tmp_array[1] = total;
+            final_array.push(tmp_array);
+            return true;
+        });
+
+        store.dispatch(groupLabels(final_array));
+    }
 }
