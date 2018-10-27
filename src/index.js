@@ -9,17 +9,23 @@ import { Router,Route,browserHistory } from 'react-router';
 // //files from redux
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+
 import { Provider } from 'react-redux';
 import { board } from './reducers/board';
 import { dashboard } from './reducers/dashboard';
+
+//configuração do react-devtools
+  require('react-devtools');
 
 const reducers = combineReducers({
     board: board,
     dashboard: dashboard
 });
 
+//configura o redux dev tools
 const store = createStore(
     reducers, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     applyMiddleware(thunkMiddleware)
 );
 
